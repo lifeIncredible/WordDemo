@@ -1,5 +1,7 @@
-package com.trustlife.word;
+/*
+package com.trustlife.word.util;
 
+import com.trustlife.word.user.TestUser;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.File;
@@ -137,3 +139,4 @@ public class Xml2Word {
 
 
 }
+*/

@@ -1,21 +1,20 @@
-package com.trustlife.word;
+package com.trustlife.word.util;
 
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class Html2Word {
 
-    public static void htmlToWord(InputStream htmlStream,OutputStream docStream) throws Exception {
+    public static void htmlToWord(InputStream htmlStream,OutputStream docStream,String encoding) throws Exception {
 
         String content = getContent(htmlStream);
         //拼一个标准的HTML格式文档
         //String content = "<html><head><style>" + css + "</style></head><body>" + body + "</body></html>";
 
-        InputStream is = new ByteArrayInputStream(content.getBytes("GBK"));
+        InputStream is = new ByteArrayInputStream(content.getBytes(encoding));
         inputStreamToWord(is, docStream);
         System.out.println("word文件创建成功");
     }
@@ -43,7 +42,7 @@ public class Html2Word {
             BufferedReader br;
             String line;
             for (InputStream is : ises) {
-                br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+                br = new BufferedReader(new InputStreamReader(is, "GBK"));
                 while ((line=br.readLine()) != null) {
                     result.append(line);
                 }
@@ -54,8 +53,8 @@ public class Html2Word {
     }
 
     public static void main(String[] args) throws Exception {
-        InputStream htmlStream = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\index.html"));
-        OutputStream docStream = Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\文件\\合同管理\\testHtml.doc"));
-        htmlToWord(htmlStream,docStream);
+        InputStream htmlStream = Files.newInputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\文件\\合同管理\\保险代理业务合作协议（线下总对总）.html"));
+        OutputStream docStream = Files.newOutputStream(Paths.get("C:\\Users\\Administrator\\Desktop\\文件\\合同管理\\保险代理业务合作协议（线下总对总）test.doc"));
+        htmlToWord(htmlStream,docStream,"GBK");
     }
 }

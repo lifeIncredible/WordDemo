@@ -1,4 +1,4 @@
-package com.trustlife.word;
+package com.trustlife.word.user;
 
 import lombok.Data;
 
