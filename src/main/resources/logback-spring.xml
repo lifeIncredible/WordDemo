@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--please pay attention that: file name should not be logback.xml， name 
+	it logback-spring.xml to use it in springboot framework -->
+<configuration>
+
+	<springProperty scope="context" name="logging.path"
+		source="logging.path" />
+	<!-- logging.level 该参数可用-D参数在启动服务时进行覆盖 -->
+	<springProperty scope="context" name="logging.level"
+		source="logging.level.contract" />
+	<springProperty scope="context" name="logging.level.sql"
+		source="logging.level.contract.sql" />	
+	<!-- to generate logfile daily -->
+	<appender name="ERROR-APPENDER"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- a filter that show green light for object that has a error log level -->
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>error</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<!-- log name -->
+		<file>${logging.path}/contract/common-error.log</file>
+		<!-- to generate a log file everyday with a longest lasting of 30 days -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- logfile name with daily rolling -->
+			<FileNamePattern>${logging.path}/contract/common-error.log.%d{yyyy-MM-dd}
+			</FileNamePattern>
+			<!-- log perserve days -->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--output format：%d is for date，%thread is for thread name，%-5level：loglevel 
+				with 5 character %msg：log message，%n line breaker -->
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}-%msg%n
+			</pattern>
+			<!-- encoding -->
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	
+	<!-- to generate logfile daily -->
+    <appender name="WARN-APPENDER"
+        class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- a filter that show green light for object that has a error log level -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>error</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <!-- log name -->
+        <file>${logging.path}/contract/common-warn.log</file>
+        <!-- to generate a log file everyday with a longest lasting of 30 days -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- logfile name with daily rolling -->
+            <FileNamePattern>${logging.path}/contract/common-warn.log.%d{yyyy-MM-dd}
+            </FileNamePattern>
+            <!-- log perserve days -->
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--output format：%d is for date，%thread is for thread name，%-5level：loglevel 
+                with 5 character %msg：log message，%n line breaker -->
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}-%msg%n
+            </pattern>
+            <!-- encoding -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+	<appender name="ROOT-APPENDER"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>${logging.level}</level>
+		</filter>
+		<file>${logging.path}/contract/common-default.log</file>
+		<!-- to generate a log file everyday with a longest lasting of 30 days -->
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- logfile name with daily rolling -->
+			<FileNamePattern>
+				${logging.path}/contract/common-default.log.%d{yyyy-MM-dd}
+			</FileNamePattern>
+			<!-- log perserve days -->
+			<MaxHistory>30</MaxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<!--output format：%d is for date，%thread is for thread name，%-5level：loglevel 
+				with 5 character %msg：log message，%n line breaker -->
+			<pattern>
+				%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}-%msg%n
+			</pattern>
+			<!-- encoding -->
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+
+	<springProfile name="local">
+		<!-- Console -->
+		<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+				<Pattern>
+					%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}-%msg%n
+				</Pattern>
+			</encoder>
+		</appender>
+
+		<logger name="com.trustlife.contract" level="${logging.level}" additivity="false">
+			<appender-ref ref="STDOUT" />
+		</logger>
+
+		<root level="${logging.level}">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+
+
+	<logger name="com.trustlife.contract" level="${logging.level}"
+		additivity="false">
+		<appender-ref ref="ROOT-APPENDER" />
+		<appender-ref ref="ERROR-APPENDER" />
+		<appender-ref ref="WARN-APPENDER" />
+	</logger>
+
+<!--
+
+	<logger name="com.ibatis" level="DEBUG" />
+	<logger name="com.ibatis.common.jdbc.SimpleDataSource" level="DEBUG" />
+	<logger name="com.ibatis.common.jdbc.ScriptRunner" level="DEBUG" />
+	<logger name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate" level="DEBUG" />
+	<logger name="java.sql.Connection" level="DEBUG" />
+	<logger name="java.sql.Statement" level="DEBUG" />
+	<logger name="java.sql.PreparedStatement" level="DEBUG" />
+	<logger name="com.trustlife.contract" level="${logging.level.sql}"/>
+-->
+
+	<!--   <logger name="net.sf.ehcache" level="DEBUG"/>   -->
+	<root level="${logging.level}">
+		<appender-ref ref="ROOT-APPENDER" />
+		<appender-ref ref="ERROR-APPENDER" />
+		<appender-ref ref="WARN-APPENDER" />
+	</root>
+
+</configuration>
